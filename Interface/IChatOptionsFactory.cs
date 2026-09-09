@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.AI;
 
-namespace BasicHelloWorld.Factory
+namespace DotNetAIAgent.Interface
 {
     public interface IChatOptionsFactory
     {

@@ -2,6 +2,9 @@
 using BasicHelloWorld.Factory;
 using BasicHelloWorld.Services;
 using BasicHelloWorld.Tools;
+using DotNetAIAgent.Embedding;
+using DotNetAIAgent.Interface;
+using DotNetAIAgent.Model;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,8 +22,10 @@ services.Configure<AgentConnectionOptions>(configuration.GetSection("AgentConnec
 
 services.AddScoped<IChatClientFactory, ChatClientFactory>();
 services.AddScoped<IChatOptionsFactory, AgentChatOptionsFactory>();
-services.AddScoped<IChatClient>(sp => sp.GetRequiredService<IChatClientFactory>().Create());
-services.AddScoped<ChatOptions>(sp => sp.GetRequiredService<IChatOptionsFactory>().Create());
+services.AddScoped<IEmbeddingClientFactory, EmbeddingClientFactory>();
+services.AddScoped(sp => sp.GetRequiredService<IChatClientFactory>().Create());
+services.AddScoped(sp => sp.GetRequiredService<IChatOptionsFactory>().Create());
+services.AddScoped(sp => sp.GetRequiredService<IEmbeddingClientFactory>().Create());
 services.AddScoped<ProductServices>();
 services.AddScoped<AIToolRegistry>();
 
@@ -31,6 +36,40 @@ var serviceProvider = services.BuildServiceProvider();
 using var scope = serviceProvider.CreateScope();
 
 var chatClient = scope.ServiceProvider.GetRequiredService<IChatClient>();
+
+IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator = scope.ServiceProvider
+                                                                        .GetRequiredService<IEmbeddingGenerator<string, Embedding<float>>>();
+
+var texts = new List<string>
+{
+    "Il cane dorme sul divano",
+    "Il mio cucciolo sta riposando sul sofà",
+    "C# supporta la programmazione asincrona",
+};
+
+var query = new List<string>
+{
+    "Dove sta riposando l'animale?"
+};
+
+var embeddingsText = await embeddingGenerator.GenerateAsync(texts);
+var embeddingsQuery = await embeddingGenerator.GenerateAsync(query);
+
+var indexedTexts = embeddingsText.Select((el, idx) => new IndexedText(texts[idx], el.Vector)).ToList() ?? new List<IndexedText>();
+var vectorQuery = embeddingsQuery.First();
+
+Console.WriteLine($"Query: {query.First()}");
+
+var vectorSearch = new VectorSearchService();
+var indexedTextResult = vectorSearch.Search(vectorQuery.Vector, indexedTexts);
+
+var count = 1;
+foreach (var item in indexedTextResult)
+{
+    Console.WriteLine($"Position {count}");
+    Console.WriteLine($"Text: {item.IndexedText.Text} and cosine similarity {item.Similarity}");
+    count++;
+}
 
 Console.WriteLine("Hi! How can I help you?");
 

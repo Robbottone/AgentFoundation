@@ -6,16 +6,16 @@ using Microsoft.Extensions.Options;
 
 namespace BasicHelloWorld.Factory
 {
-    public class ChatClientFactory: IChatClientFactory
+    public class EmbeddingClientFactory: IEmbeddingClientFactory
     {
         private readonly AgentConnectionOptions _agentConnectionOption;
 
-        public ChatClientFactory(IOptions<AgentConnectionOptions> agentOptions) {
+        public EmbeddingClientFactory(IOptions<AgentConnectionOptions> agentOptions) {
             _agentConnectionOption = agentOptions.Value;
         }
 
         // costruzione del client
-        public IChatClient Create()
+        public IEmbeddingGenerator<string, Embedding<float>> Create()
         {
             
             var endpoint = new Uri(_agentConnectionOption.Endpoint);
@@ -24,12 +24,9 @@ namespace BasicHelloWorld.Factory
                 endpoint,
                 new AzureCliCredential());
 
-            var chatClient = azureClient.GetChatClient(_agentConnectionOption.Deployment).AsIChatClient();
-
-            var builder = new ChatClientBuilder(chatClient);
-            builder.UseFunctionInvocation();
-
-            return builder.Build();
+            var embeddingClient = azureClient.GetEmbeddingClient(_agentConnectionOption.EmbeddingDeployment).AsIEmbeddingGenerator();
+            
+            return embeddingClient;
         }
     }
 }
