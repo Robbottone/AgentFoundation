@@ -28,6 +28,8 @@ services.AddScoped(sp => sp.GetRequiredService<IChatOptionsFactory>().Create());
 services.AddScoped(sp => sp.GetRequiredService<IEmbeddingClientFactory>().Create());
 services.AddScoped<ProductServices>();
 services.AddScoped<AIToolRegistry>();
+services.AddScoped<DocumentChunkingService>();
+services.AddScoped<DocumentChunkIndexService>();
 
 services.RegisterAIToolProviders();
 
@@ -37,8 +39,24 @@ using var scope = serviceProvider.CreateScope();
 
 var chatClient = scope.ServiceProvider.GetRequiredService<IChatClient>();
 
+var documentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkingService>();
+
 IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator = scope.ServiceProvider
                                                                         .GetRequiredService<IEmbeddingGenerator<string, Embedding<float>>>();
+
+var fileName = Path.Combine(AppContext.BaseDirectory,"Knowledge","knowledge-base-thermohome-x200.txt");
+
+if (!File.Exists(fileName))
+    throw new ArgumentNullException("File non esiste");
+
+var readFile = File.ReadAllText(fileName);
+
+if (string.IsNullOrEmpty(readFile)) throw new ArgumentNullException(nameof(readFile), "File vuoto o non raggiungibile");
+
+var fileGuid = Guid.NewGuid();
+var knowledgeBase = new KnowledgeDocument(fileGuid, fileName, readFile);
+
+var documentChunk = documentChunkService.GenerateDocumentChunk(knowledgeBase, 70, 15);
 
 var texts = new List<string>
 {
