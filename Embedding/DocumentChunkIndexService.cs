@@ -12,7 +12,7 @@ namespace DotNetAIAgent.Embedding
             _embeddingGenerator = embedding;
         }
 
-        public async IAsyncEnumerable<DocumentChunkIndexed> GenerateDocumentChunkIndex(IEnumerable<DocumentChunk> documentChunks)
+        public async IAsyncEnumerable<IndexedDocumentChunk> GenerateDocumentChunkIndex(IEnumerable<DocumentChunk> documentChunks)
         {
             if (documentChunks is null)
                 throw new ArgumentNullException(nameof(documentChunks), "La collezione dei document chunks non puo essere pari a null");
@@ -21,7 +21,7 @@ namespace DotNetAIAgent.Embedding
             
             foreach(var documentChunk in documentChunks) {
                 var vector = await _embeddingGenerator.GenerateVectorAsync(documentChunk.ChunkText);
-                var documentChunkIndex = new DocumentChunkIndexed(documentChunk, vector);
+                var documentChunkIndex = new IndexedDocumentChunk(documentChunk, vector);
 
                 yield return documentChunkIndex;
             }
