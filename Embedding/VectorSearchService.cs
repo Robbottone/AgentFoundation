@@ -4,17 +4,17 @@ namespace DotNetAIAgent.Embedding
 {
     public class VectorSearchService
     {
-        public IEnumerable<SearchResultEmbedding> Search(ReadOnlyMemory<float> vectorQuery, List<IndexedText> indexedTexts, int topK = 3)
+        public IEnumerable<SearchResultEmbedding> Search(ReadOnlyMemory<float> vectorQuery, List<IndexedDocumentChunk> indexedDocumentChunks, int topK = 3)
         {
             if (vectorQuery.IsEmpty)
                throw new ArgumentException("Il vettore della query non deve essere vuoto");
 
-            if (indexedTexts.Count == 0)
+            if (indexedDocumentChunks.Count == 0)
                throw new ArgumentException("I vettori della ricerca devono essere presenti");
 
             var searchResultCosineValues = new List<SearchResultEmbedding>();
 
-            foreach (var indexedText in indexedTexts)
+            foreach (var indexedText in indexedDocumentChunks)
             {
                 var cosineValue = CosineSimilarity(vectorQuery, indexedText.Vector);
 

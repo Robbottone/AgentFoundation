@@ -40,6 +40,7 @@ using var scope = serviceProvider.CreateScope();
 var chatClient = scope.ServiceProvider.GetRequiredService<IChatClient>();
 
 var documentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkingService>();
+var indexedDocumentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkIndexService>();
 
 IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator = scope.ServiceProvider
                                                                         .GetRequiredService<IEmbeddingGenerator<string, Embedding<float>>>();
@@ -56,36 +57,38 @@ if (string.IsNullOrEmpty(readFile)) throw new ArgumentNullException(nameof(readF
 var fileGuid = Guid.NewGuid();
 var knowledgeBase = new KnowledgeDocument(fileGuid, fileName, readFile);
 
-var documentChunk = documentChunkService.GenerateDocumentChunk(knowledgeBase, 70, 15);
+var documentChunks = documentChunkService.GenerateDocumentChunk(knowledgeBase, 400, 80);
 
-var texts = new List<string>
+var indexedDocumentChunks = indexedDocumentChunkService.GenerateDocumentChunkIndex(documentChunks);
+List<IndexedDocumentChunk> chunks = new(); 
+
+await foreach(var indChunk in indexedDocumentChunks)
 {
-    "Il cane dorme sul divano",
-    "Il mio cucciolo sta riposando sul sofà",
-    "C# supporta la programmazione asincrona",
-};
+    chunks.Add(indChunk);
+}
 
 var query = new List<string>
 {
-    "Dove sta riposando l'animale?"
+    "La caldaia mi dà errore E15, cosa devo fare?"
 };
 
-var embeddingsText = await embeddingGenerator.GenerateAsync(texts);
 var embeddingsQuery = await embeddingGenerator.GenerateAsync(query);
-
-var indexedTexts = embeddingsText.Select((el, idx) => new IndexedText(texts[idx], el.Vector)).ToList() ?? new List<IndexedText>();
 var vectorQuery = embeddingsQuery.First();
 
-Console.WriteLine($"Query: {query.First()}");
+Console.WriteLine($"Query: {query.First()}\n");
 
 var vectorSearch = new VectorSearchService();
-var indexedTextResult = vectorSearch.Search(vectorQuery.Vector, indexedTexts);
+var indexedTextResult = vectorSearch.Search(vectorQuery.Vector, chunks);
 
 var count = 1;
+
 foreach (var item in indexedTextResult)
 {
-    Console.WriteLine($"Position {count}");
-    Console.WriteLine($"Text: {item.IndexedText.Text} and cosine similarity {item.Similarity}");
+    Console.WriteLine($"========== RESULT #{count} ==========");
+    Console.WriteLine($"Similarity {item.Similarity}");
+    Console.WriteLine($"Start index {item.IndexedDocument.DocumentChunk.StartIndex}\n");
+
+    Console.WriteLine($"{item.IndexedDocument.DocumentChunk.ChunkText}\n");
     count++;
 }
 

@@ -1,4 +1,4 @@
 ﻿namespace DotNetAIAgent.Model
 {
-    public record IndexedDocumentChunk(DocumentChunk documentChunk, ReadOnlyMemory<float> Vector);
+    public record IndexedDocumentChunk(DocumentChunk DocumentChunk, ReadOnlyMemory<float> Vector);
 }
