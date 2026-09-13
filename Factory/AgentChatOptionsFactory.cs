@@ -1,11 +1,6 @@
 ﻿using BasicHelloWorld.Tools;
 using DotNetAIAgent.Interface;
 using Microsoft.Extensions.AI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BasicHelloWorld.Factory
 {
