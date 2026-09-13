@@ -1,14 +1,8 @@
-﻿using BasicHelloWorld.Attribute;
-using BasicHelloWorld.Model.Interfaces;
+﻿using DotNetAIAgent.Attribute;
+using DotNetAIAgent.Model.Interfaces;
 using Microsoft.Extensions.AI;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BasicHelloWorld.Tools
+namespace DotNetAIAgent.Tools
 {
     public class AIToolRegistry
     {

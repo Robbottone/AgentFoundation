@@ -1,8 +1,8 @@
-﻿using BasicHelloWorld.Tools;
-using DotNetAIAgent.Interface;
+﻿using DotNetAIAgent.Interface;
+using DotNetAIAgent.Tools;
 using Microsoft.Extensions.AI;
 
-namespace BasicHelloWorld.Factory
+namespace DotNetAIAgent.Factory
 {
     public class AgentChatOptionsFactory : IChatOptionsFactory
     {

@@ -4,7 +4,7 @@ using DotNetAIAgent.Interface;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 
-namespace BasicHelloWorld.Factory
+namespace DotNetAIAgent.Factory
 {
     public class EmbeddingClientFactory: IEmbeddingClientFactory
     {

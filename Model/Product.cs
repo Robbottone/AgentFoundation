@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BasicHelloWorld.Model
+﻿namespace DotNetAIAgent.Model
 {
     public class Product
     {
-        public string ProductName           { get; set;  }
+        public string ProductName           { get; set;  } = string.Empty;
         public int    Storage               { get; set; }
-        public string Description           { get; set; }
+        public string Description           { get; set; } = string.Empty;
         public decimal Price                { get; set; }
         public bool Available               { get; set; }
         public int? WarrantyMonths          { get; set; }

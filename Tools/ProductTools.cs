@@ -1,14 +1,9 @@
-﻿using BasicHelloWorld.Attribute;
-using BasicHelloWorld.Model.Interfaces;
-using BasicHelloWorld.Services;
-using System;
-using System.Collections.Generic;
+﻿using DotNetAIAgent.Attribute;
+using DotNetAIAgent.Model.Interfaces;
+using DotNetAIAgent.Services;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BasicHelloWorld.Tools
+namespace DotNetAIAgent.Tools
 {
     public class ProductTools: IAIToolProvider
     {

@@ -1,8 +1,8 @@
-﻿using BasicHelloWorld.Model.Interfaces;
+﻿using DotNetAIAgent.Model.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace BasicHelloWorld.Tools
+namespace DotNetAIAgent.Tools
 {
     public static class AIToolServiceCollectionExtensions
     {

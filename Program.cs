@@ -1,10 +1,10 @@
-﻿using BasicHelloWorld;
-using BasicHelloWorld.Factory;
-using BasicHelloWorld.Services;
-using BasicHelloWorld.Tools;
+﻿using DotNetAIAgent;
 using DotNetAIAgent.Embedding;
+using DotNetAIAgent.Factory;
 using DotNetAIAgent.Interface;
 using DotNetAIAgent.Model;
+using DotNetAIAgent.Services;
+using DotNetAIAgent.Tools;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
