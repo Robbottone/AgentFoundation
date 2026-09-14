@@ -1,4 +1,5 @@
 ﻿using DotNetAIAgent.Model;
+using System.Text;
 
 namespace DotNetAIAgent.Embedding
 {
@@ -25,17 +26,30 @@ namespace DotNetAIAgent.Embedding
 
             var documentChunk = new List<DocumentChunk>();
 
-            var step = chunkSize - chunkOverlap;
+            var normText = document.Text.Replace("\r\n","\n");
+            var textParagraphed = normText.Split("\n\n", StringSplitOptions.RemoveEmptyEntries);
+            var buildingText = new StringBuilder();
 
-            for (var i = 0; i < document.Text.Length; i+=step)
+            var startingIndex = 0;
+
+            for (var indexParagraph = 0; indexParagraph < textParagraphed.Length;)
             {
-                var chunkId = $"{document.DocumentId}_{i}";
-                var text = new string(document.Text.Skip(i).Take(chunkSize).ToArray());
+                if(buildingText.Length + textParagraphed[indexParagraph].Length < chunkSize)
+                {
+                    buildingText.Append(textParagraphed[indexParagraph]);
+                    indexParagraph++;
+                }
+                else
+                {
+                    startingIndex = buildingText.Length;
+                    var chunkId = $"{document.DocumentId}_{startingIndex}";
+                    documentChunk.Add(new DocumentChunk(document.DocumentId, 
+                                                                    chunkId,
+                                                   indexParagraph*chunkSize,
+                                                   buildingText.ToString()));
 
-                documentChunk.Add(new DocumentChunk(document.DocumentId, chunkId, i, text));
-
-                if (i+chunkSize >= document.Text.Length)
-                    break;
+                    buildingText = new StringBuilder();
+                }
             }
 
             return documentChunk;
