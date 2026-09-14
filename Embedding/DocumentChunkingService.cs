@@ -30,29 +30,49 @@ namespace DotNetAIAgent.Embedding
             var textParagraphed = normText.Split("\n\n", StringSplitOptions.RemoveEmptyEntries);
             var buildingText = new StringBuilder();
 
-            var startingIndex = 0;
-
             for (var indexParagraph = 0; indexParagraph < textParagraphed.Length;)
             {
-                if(buildingText.Length + textParagraphed[indexParagraph].Length < chunkSize)
+                var separatorLength = buildingText.Length > 0 ? 2 : 0;
+
+                if((buildingText.Length + separatorLength) + textParagraphed[indexParagraph].Length <= chunkSize)
                 {
+                    if (buildingText.Length > 0) 
+                    {
+                        buildingText.Append("\n\n");
+                    }
+
                     buildingText.Append(textParagraphed[indexParagraph]);
                     indexParagraph++;
                 }
                 else
                 {
-                    startingIndex = buildingText.Length;
-                    var chunkId = $"{document.DocumentId}_{startingIndex}";
-                    documentChunk.Add(new DocumentChunk(document.DocumentId, 
-                                                                    chunkId,
-                                                   indexParagraph*chunkSize,
-                                                   buildingText.ToString()));
+                    if (textParagraphed[indexParagraph].Length > chunkSize)
+                    {
+                        
+                    }
+
+                    CreateDocumentChunk(document, documentChunk, normText, buildingText);
 
                     buildingText = new StringBuilder();
                 }
             }
 
+            if (buildingText.Length > 0)
+            {
+                CreateDocumentChunk(document, documentChunk, normText, buildingText);
+            }
+
             return documentChunk;
+        }
+
+        private static void CreateDocumentChunk(KnowledgeDocument document, List<DocumentChunk> documentChunk, string normText, StringBuilder buildingText)
+        {
+            int startingIndex = normText.LastIndexOf(buildingText.ToString());
+            var chunkId = $"{document.DocumentId}_{startingIndex}";
+            documentChunk.Add(new DocumentChunk(document.DocumentId,
+                                                            chunkId,
+                                                      startingIndex,
+                                           buildingText.ToString()));
         }
     }
 }
