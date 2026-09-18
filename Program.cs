@@ -1,7 +1,10 @@
-﻿using BasicHelloWorld;
-using BasicHelloWorld.Factory;
-using BasicHelloWorld.Services;
-using BasicHelloWorld.Tools;
+﻿using DotNetAIAgent;
+using DotNetAIAgent.Embedding;
+using DotNetAIAgent.Factory;
+using DotNetAIAgent.Interface;
+using DotNetAIAgent.Model;
+using DotNetAIAgent.Services;
+using DotNetAIAgent.Tools;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,10 +22,14 @@ services.Configure<AgentConnectionOptions>(configuration.GetSection("AgentConnec
 
 services.AddScoped<IChatClientFactory, ChatClientFactory>();
 services.AddScoped<IChatOptionsFactory, AgentChatOptionsFactory>();
-services.AddScoped<IChatClient>(sp => sp.GetRequiredService<IChatClientFactory>().Create());
-services.AddScoped<ChatOptions>(sp => sp.GetRequiredService<IChatOptionsFactory>().Create());
+services.AddScoped<IEmbeddingClientFactory, EmbeddingClientFactory>();
+services.AddScoped(sp => sp.GetRequiredService<IChatClientFactory>().Create());
+services.AddScoped(sp => sp.GetRequiredService<IChatOptionsFactory>().Create());
+services.AddScoped(sp => sp.GetRequiredService<IEmbeddingClientFactory>().Create());
 services.AddScoped<ProductServices>();
 services.AddScoped<AIToolRegistry>();
+services.AddScoped<DocumentChunkingService>();
+services.AddScoped<DocumentChunkIndexService>();
 
 services.RegisterAIToolProviders();
 
@@ -31,6 +38,60 @@ var serviceProvider = services.BuildServiceProvider();
 using var scope = serviceProvider.CreateScope();
 
 var chatClient = scope.ServiceProvider.GetRequiredService<IChatClient>();
+
+var documentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkingService>();
+var indexedDocumentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkIndexService>();
+
+IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator = scope.ServiceProvider
+                                                                        .GetRequiredService<IEmbeddingGenerator<string, Embedding<float>>>();
+
+var fileName = Path.Combine(AppContext.BaseDirectory,"Knowledge","knowledge-base-thermohome-x200.txt");
+
+if (!File.Exists(fileName))
+    throw new ArgumentNullException("File non esiste");
+
+var readFile = File.ReadAllText(fileName);
+
+if (string.IsNullOrEmpty(readFile)) throw new ArgumentNullException(nameof(readFile), "File vuoto o non raggiungibile");
+
+var fileGuid = Guid.NewGuid();
+var fileGuidTest = Guid.NewGuid();
+var knowledgeBase = new KnowledgeDocument(fileGuid, fileName, readFile);
+
+var documentChunks = documentChunkService.GenerateDocumentChunk(knowledgeBase, 400, 80);
+
+var indexedDocumentChunks = indexedDocumentChunkService.GenerateDocumentChunkIndex(documentChunks);
+List<IndexedDocumentChunk> chunks = new(); 
+
+await foreach(var indChunk in indexedDocumentChunks)
+{
+    chunks.Add(indChunk);
+}
+
+var query = new List<string>
+{
+    "La caldaia mi dà errore E15, cosa devo fare?"
+};
+
+var embeddingsQuery = await embeddingGenerator.GenerateAsync(query);
+var vectorQuery = embeddingsQuery.First();
+
+Console.WriteLine($"Query: {query.First()}\n");
+
+var vectorSearch = new VectorSearchService();
+var indexedTextResult = vectorSearch.Search(vectorQuery.Vector, chunks);
+
+var count = 1;
+
+foreach (var item in indexedTextResult)
+{
+    Console.WriteLine($"========== RESULT #{count} ==========");
+    Console.WriteLine($"Similarity {item.Similarity}");
+    Console.WriteLine($"Start index {item.IndexedDocument.DocumentChunk.StartIndex}\n");
+
+    Console.WriteLine($"{item.IndexedDocument.DocumentChunk.ChunkText}\n");
+    count++;
+}
 
 Console.WriteLine("Hi! How can I help you?");
 

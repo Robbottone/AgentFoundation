@@ -1,0 +1,66 @@
+KNOWLEDGE BASE – CALDAIA TERMICA THERMOHOME X200
+
+1. DESCRIZIONE GENERALE
+La ThermoHome X200 è una caldaia murale a condensazione per il riscaldamento domestico e la produzione di acqua calda sanitaria. Il display mostra temperatura, pressione dell'impianto e codici di errore.
+
+La pressione normale dell'impianto, a caldaia fredda, è indicativamente tra 1,0 e 1,5 bar. Durante il funzionamento può aumentare leggermente.
+
+2. ACCENSIONE DELLA CALDAIA
+Per accendere la caldaia verificare che l'alimentazione elettrica sia presente e che il rubinetto del gas sia aperto. Premere il pulsante di accensione sul pannello frontale.
+
+Se la caldaia non si accende, verificare prima l'alimentazione elettrica. Se il display è acceso ma il bruciatore non parte, controllare eventuali codici di errore.
+
+3. PRESSIONE DELL'IMPIANTO
+Una pressione troppo bassa può impedire il corretto funzionamento. Se il valore scende sotto 0,8 bar, il sistema può entrare in blocco di sicurezza.
+
+Per aumentare la pressione utilizzare il rubinetto di carico nella parte inferiore della caldaia. Aprirlo lentamente e osservare il valore sul display. Quando la pressione raggiunge circa 1,2-1,5 bar, chiudere completamente il rubinetto.
+
+4. ERRORE E15 – PRESSIONE INSUFFICIENTE
+Il codice E15 indica che la pressione dell'acqua nel circuito di riscaldamento è insufficiente.
+
+Se la pressione è inferiore a 0,8 bar, utilizzare il rubinetto di carico per riportarla a circa 1,2-1,5 bar. Dopo il ripristino, chiudere il rubinetto e premere RESET per circa due secondi.
+
+Se l'errore E15 ricompare frequentemente, potrebbe esserci una perdita nell'impianto oppure un problema al vaso di espansione. In questo caso è consigliato contattare un tecnico qualificato.
+
+5. ERRORE E20 – TEMPERATURA ECCESSIVA
+Il codice E20 segnala che la temperatura interna della caldaia ha superato il limite di sicurezza.
+
+Spegnere la caldaia e attendere almeno dieci minuti prima di tentare un nuovo avvio. Verificare che i termosifoni non siano tutti chiusi e che l'acqua possa circolare correttamente.
+
+Se l'errore compare nuovamente, non continuare a effettuare reset ripetuti. Contattare il servizio di assistenza tecnica.
+
+6. RESET DELLA CALDAIA
+Il reset può ripristinare il funzionamento dopo alcuni errori temporanei. Tenere premuto RESET per circa due secondi e attendere il riavvio.
+
+Il reset non risolve problemi meccanici, perdite d'acqua o guasti persistenti. Se lo stesso errore si presenta più volte, è necessario individuarne la causa.
+
+7. ACQUA CALDA SANITARIA
+Se l'acqua sanitaria non raggiunge la temperatura desiderata, verificare innanzitutto la temperatura impostata sul pannello.
+
+Una portata d'acqua molto elevata può ridurre la temperatura in uscita. Provare a diminuire leggermente il flusso dal rubinetto.
+
+Se l'acqua rimane fredda nonostante la caldaia sia accesa e non siano presenti errori, contattare l'assistenza tecnica.
+
+8. MANUTENZIONE
+La caldaia deve essere controllata periodicamente da personale qualificato secondo le normative applicabili e le indicazioni del produttore.
+
+L'utente può pulire la parte esterna con un panno morbido. Non aprire il mantello della caldaia e non intervenire sui componenti interni.
+
+9. RUMORI DURANTE IL FUNZIONAMENTO
+Leggeri rumori durante l'accensione, lo spegnimento o la circolazione dell'acqua possono essere normali.
+
+Rumori continui, vibrazioni insolite o colpi possono indicare aria nell'impianto, problemi di circolazione o altri malfunzionamenti.
+
+Se il rumore è intenso o accompagnato da un codice di errore, spegnere l'apparecchio e contattare l'assistenza.
+
+10. GARANZIA E ASSISTENZA
+La garanzia standard della ThermoHome X200 dura 24 mesi dalla data di acquisto, salvo condizioni differenti indicate nel contratto di vendita.
+
+Gli interventi effettuati da personale non autorizzato possono compromettere la copertura della garanzia.
+
+Prima di contattare l'assistenza annotare il modello, il codice di errore visualizzato e, se disponibile, il numero di serie.
+
+11. NOTE DI SICUREZZA
+In presenza di odore di gas non utilizzare interruttori elettrici, non accendere fiamme e non tentare riparazioni autonome. Chiudere il gas se è possibile farlo in sicurezza, aerare il locale e rivolgersi ai servizi competenti.
+
+Non rimuovere pannelli o dispositivi di sicurezza. Gli interventi sui componenti interni devono essere eseguiti da personale qualificato.
