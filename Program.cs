@@ -55,6 +55,7 @@ var readFile = File.ReadAllText(fileName);
 if (string.IsNullOrEmpty(readFile)) throw new ArgumentNullException(nameof(readFile), "File vuoto o non raggiungibile");
 
 var fileGuid = Guid.NewGuid();
+var fileGuidTest = Guid.NewGuid();
 var knowledgeBase = new KnowledgeDocument(fileGuid, fileName, readFile);
 
 var documentChunks = documentChunkService.GenerateDocumentChunk(knowledgeBase, 400, 80);
