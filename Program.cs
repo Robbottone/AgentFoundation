@@ -1,6 +1,7 @@
 ﻿using DotNetAIAgent;
 using DotNetAIAgent.Embedding;
 using DotNetAIAgent.Factory;
+using DotNetAIAgent.Generation;
 using DotNetAIAgent.Interface;
 using DotNetAIAgent.Model;
 using DotNetAIAgent.Services;
@@ -30,6 +31,7 @@ services.AddScoped<ProductServices>();
 services.AddScoped<AIToolRegistry>();
 services.AddScoped<DocumentChunkingService>();
 services.AddScoped<DocumentChunkIndexService>();
+services.AddScoped<RagContextBuilderService>();
 
 services.RegisterAIToolProviders();
 
@@ -41,6 +43,7 @@ var chatClient = scope.ServiceProvider.GetRequiredService<IChatClient>();
 
 var documentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkingService>();
 var indexedDocumentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkIndexService>();
+var ragContextBuilderService = scope.ServiceProvider.GetRequiredService<RagContextBuilderService>();
 
 IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator = scope.ServiceProvider
                                                                         .GetRequiredService<IEmbeddingGenerator<string, Embedding<float>>>();
@@ -55,55 +58,62 @@ var readFile = File.ReadAllText(fileName);
 if (string.IsNullOrEmpty(readFile)) throw new ArgumentNullException(nameof(readFile), "File vuoto o non raggiungibile");
 
 var fileGuid = Guid.NewGuid();
-var fileGuidTest = Guid.NewGuid();
+
 var knowledgeBase = new KnowledgeDocument(fileGuid, fileName, readFile);
+var vectorSearch = new VectorSearchService();
 
 var documentChunks = documentChunkService.GenerateDocumentChunk(knowledgeBase, 400, 80);
 
 var indexedDocumentChunks = indexedDocumentChunkService.GenerateDocumentChunkIndex(documentChunks);
 List<IndexedDocumentChunk> chunks = new(); 
 
+
 await foreach(var indChunk in indexedDocumentChunks)
 {
     chunks.Add(indChunk);
 }
 
-var query = new List<string>
-{
-    "La caldaia mi dà errore E15, cosa devo fare?"
-};
-
-var embeddingsQuery = await embeddingGenerator.GenerateAsync(query);
-var vectorQuery = embeddingsQuery.First();
-
-Console.WriteLine($"Query: {query.First()}\n");
-
-var vectorSearch = new VectorSearchService();
-var indexedTextResult = vectorSearch.Search(vectorQuery.Vector, chunks);
-
-var count = 1;
-
-foreach (var item in indexedTextResult)
-{
-    Console.WriteLine($"========== RESULT #{count} ==========");
-    Console.WriteLine($"Similarity {item.Similarity}");
-    Console.WriteLine($"Start index {item.IndexedDocument.DocumentChunk.StartIndex}\n");
-
-    Console.WriteLine($"{item.IndexedDocument.DocumentChunk.ChunkText}\n");
-    count++;
-}
-
-Console.WriteLine("Hi! How can I help you?");
-
 var messages = new List<ChatMessage>();
 var options = scope.ServiceProvider.GetRequiredService<ChatOptions>();
 
-while (true)
+Console.WriteLine("Hi! How can I help you?");
+var query = Console.ReadLine();
+
+while(true)
 {
-    var requestMessage = Console.ReadLine();
+    if (string.IsNullOrEmpty(query))
+    {
+        Console.WriteLine("Make a request");
+        query = Console.ReadLine();
+    }
+
+    var embeddingsQuery = await embeddingGenerator.GenerateAsync([query]);
+    var vectorQuery = embeddingsQuery.First();
+
+    var indexedTextResult = vectorSearch.Search(vectorQuery.Vector, chunks);
+
+    var count = 1;
+    foreach (var item in indexedTextResult)
+    {
+        Console.WriteLine($"========== RESULT #{count} ==========");
+        Console.WriteLine($"Similarity {item.Similarity}");
+        Console.WriteLine($"Start index {item.IndexedDocument.DocumentChunk.StartIndex}\n");
+
+        Console.WriteLine($"{item.IndexedDocument.DocumentChunk.ChunkText}\n");
+        count++;
+    }
+
+    var context = ragContextBuilderService.CreateContext(indexedTextResult.Select(el => el.IndexedDocument.DocumentChunk));
+
+    var stringBuilder = new StringBuilder();
+
+    stringBuilder.AppendLine($"CONTEXT:\n{context}");
+    stringBuilder.AppendLine($"QUESTION:\n{query}");
+    var ragMessage = stringBuilder.ToString();
+    
     bool limitWarningShown = false;
 
-    ChatMessage message = new ChatMessage(ChatRole.User, requestMessage);
+    ChatMessage message = new ChatMessage(ChatRole.User, ragMessage);
 
     messages.Add(message);
 
@@ -119,27 +129,13 @@ while (true)
             sb.Append(item.Text);
         }
 
-        if (item.Contents.Any())
-        {
-            foreach (var content in item.Contents)
-            {
-                Console.WriteLine(content.GetType().Name);
-
-                if (content is FunctionCallContent functionCall)
-                {
-                    Console.WriteLine(functionCall.Name);
-                    Console.WriteLine(JsonSerializer.Serialize(functionCall.Arguments));
-                }
-            }
-        }
-
         if (item.RawRepresentation is StreamingChatCompletionUpdate metaDataRawChatUpdate)
         {
             if (metaDataRawChatUpdate?.Usage is not null)
             {
                 Console.WriteLine($"Usage: {metaDataRawChatUpdate.Usage.TotalTokenCount}");
                 tokenInputOutput.Add(new(metaDataRawChatUpdate.Usage.InputTokenCount,
-                                         metaDataRawChatUpdate.Usage.OutputTokenCount));
+                                            metaDataRawChatUpdate.Usage.OutputTokenCount));
             }
         }
        
@@ -149,7 +145,6 @@ while (true)
             limitWarningShown = true;
         }
     }
-
     var inputTokenSum = 0;
     var outputTokenSum = 0;
     tokenInputOutput.ForEach(el => {inputTokenSum += (el.inputToken); outputTokenSum += el.outputToken;});
@@ -161,4 +156,5 @@ while (true)
     var responseChat = new ChatMessage(ChatRole.Assistant, sb.ToString());
 
     messages.Add(responseChat);
+    query = "";
 }

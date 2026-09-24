@@ -17,7 +17,8 @@ namespace DotNetAIAgent.Factory
         {
             var chatOptions = new ChatOptions
             {
-                Tools = _toolRegistry.GetTools()
+                Tools = _toolRegistry.GetTools(),
+                Instructions = "Rispondi alla domanda utilizzando esclusivamente\r\nle informazioni presenti nel CONTEXT fornito.\r\n\r\nSe il CONTEXT non contiene informazioni sufficienti\r\nper rispondere, dichiaralo senza inventare informazioni.\r\n\r\nIndica le SOURCE utilizzate per formulare la risposta."
             };
 
             return chatOptions;
