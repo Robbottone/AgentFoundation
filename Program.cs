@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenAI.Chat;
 using System.Text;
-using System.Text.Json;
 using ChatMessage = Microsoft.Extensions.AI.ChatMessage;
 
 var services = new ServiceCollection();
@@ -76,16 +75,14 @@ await foreach(var indChunk in indexedDocumentChunks)
 var messages = new List<ChatMessage>();
 var options = scope.ServiceProvider.GetRequiredService<ChatOptions>();
 
-Console.WriteLine("Hi! How can I help you?");
-var query = Console.ReadLine();
-
 while(true)
 {
+    Console.WriteLine();
+    Console.WriteLine("Make a request..");
+    var query = Console.ReadLine();
+
     if (string.IsNullOrEmpty(query))
-    {
-        Console.WriteLine("Make a request");
-        query = Console.ReadLine();
-    }
+        continue;
 
     var embeddingsQuery = await embeddingGenerator.GenerateAsync([query]);
     var vectorQuery = embeddingsQuery.First();
@@ -156,5 +153,4 @@ while(true)
     var responseChat = new ChatMessage(ChatRole.Assistant, sb.ToString());
 
     messages.Add(responseChat);
-    query = "";
 }
