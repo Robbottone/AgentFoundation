@@ -77,13 +77,16 @@ var options = scope.ServiceProvider.GetRequiredService<ChatOptions>();
 
 while(true)
 {
+    #region Query Ingestion
     Console.WriteLine();
     Console.WriteLine("Make a request..");
     var query = Console.ReadLine();
 
     if (string.IsNullOrEmpty(query))
         continue;
+    #endregion
 
+    #region Vector Comparison
     var embeddingsQuery = await embeddingGenerator.GenerateAsync([query]);
     var vectorQuery = embeddingsQuery.First();
 
@@ -99,7 +102,9 @@ while(true)
         Console.WriteLine($"{item.IndexedDocument.DocumentChunk.ChunkText}\n");
         count++;
     }
+    #endregion
 
+    #region Rag Input Message
     var context = ragContextBuilderService.CreateContext(indexedTextResult.Select(el => el.IndexedDocument.DocumentChunk));
 
     var stringBuilder = new StringBuilder();
@@ -113,7 +118,9 @@ while(true)
     ChatMessage message = new ChatMessage(ChatRole.User, ragMessage);
 
     messages.Add(message);
+    #endregion
 
+    #region Message Response
     var responses = chatClient.GetStreamingResponseAsync(messages, options);
 
     StringBuilder sb = new StringBuilder();
@@ -142,6 +149,9 @@ while(true)
             limitWarningShown = true;
         }
     }
+    #endregion
+
+    #region Token Report
     var inputTokenSum = 0;
     var outputTokenSum = 0;
     tokenInputOutput.ForEach(el => {inputTokenSum += (el.inputToken); outputTokenSum += el.outputToken;});
@@ -151,6 +161,9 @@ while(true)
     Console.WriteLine($"Token utilizzati in totale: \n input: {inputTokenSum} | output: {outputTokenSum} \n totale: {inputTokenSum+outputTokenSum}");
 
     var responseChat = new ChatMessage(ChatRole.Assistant, sb.ToString());
+    #endregion
 
+    #region History Message
     messages.Add(responseChat);
+    #endregion
 }
