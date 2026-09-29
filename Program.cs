@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenAI.Chat;
 using System.Text;
+using ChatFinishReason = Microsoft.Extensions.AI.ChatFinishReason;
 using ChatMessage = Microsoft.Extensions.AI.ChatMessage;
 
 var services = new ServiceCollection();
@@ -40,8 +41,6 @@ services.RegisterAIToolProviders();
 var serviceProvider = services.BuildServiceProvider();
 
 using var scope = serviceProvider.CreateScope();
-
-var chatClient = scope.ServiceProvider.GetRequiredService<IChatClient>();
 
 var documentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkingService>();
 var indexedDocumentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkIndexService>();
@@ -100,13 +99,19 @@ while(true)
     #region Message Response
     var response = await chatResponseService.GenerateResponseAsync(messages, options);
     Console.WriteLine(response.Text);
+
+    if (response.FinishReason.HasValue && response.FinishReason.Value == ChatFinishReason.Length)
+    { 
+        Console.WriteLine("[La risposta è stata interrotta perché è stato raggiunto il limite massimo di token.]");
+    }
+
     #endregion
 
     #region Token Report
     Console.WriteLine();
     Console.WriteLine($"Token utilizzati in totale: \n input: {response.InputTokens} | output: {response.OutputTokens} \n totale: {response.InputTokens+response.OutputTokens}");
 
-    var responseChat = new ChatMessage(ChatRole.Assistant, response.Text.ToString());
+    var responseChat = new ChatMessage(ChatRole.Assistant, response.Text);
     #endregion
 
     #region History Message
