@@ -33,6 +33,7 @@ services.AddScoped<DocumentChunkIndexService>();
 services.AddScoped<RagMessageBuilder>();
 services.AddScoped<VectorSearchService>();
 services.AddScoped<RagRetriever>();
+services.AddScoped<ChatResponseService>();
 
 services.RegisterAIToolProviders();
 
@@ -46,6 +47,7 @@ var documentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChun
 var indexedDocumentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkIndexService>();
 var ragMessageBuilder = scope.ServiceProvider.GetRequiredService<RagMessageBuilder>();
 var ragRetriever = scope.ServiceProvider.GetRequiredService<RagRetriever>();
+var chatResponseService = scope.ServiceProvider.GetRequiredService<ChatResponseService>();
 
 var fileName = Path.Combine(AppContext.BaseDirectory,"Knowledge","knowledge-base-thermohome-x200.txt");
 
@@ -89,56 +91,22 @@ while(true)
 
     #region Rag Input Message
 
-    var ragMessage = ragMessageBuilder.CreateRagMessage(documentChunks, query);
+    var ragMessage = ragMessageBuilder.CreateRagMessage(documentChunkResult, query);
     
-    bool limitWarningShown = false;
-
     ChatMessage message = new ChatMessage(ChatRole.User, ragMessage);
-
     messages.Add(message);
     #endregion
 
     #region Message Response
-    var responses = chatClient.GetStreamingResponseAsync(messages, options);
-
-    StringBuilder sb = new StringBuilder();
-    List<(int inputToken, int outputToken)> tokenInputOutput = new();
-
-    await foreach (var item in responses)
-    {
-        if (!string.IsNullOrEmpty(item.Text))
-        {
-            sb.Append(item.Text);
-        }
-
-        if (item.RawRepresentation is StreamingChatCompletionUpdate metaDataRawChatUpdate)
-        {
-            if (metaDataRawChatUpdate?.Usage is not null)
-            {
-                Console.WriteLine($"Usage: {metaDataRawChatUpdate.Usage.TotalTokenCount}");
-                tokenInputOutput.Add(new(metaDataRawChatUpdate.Usage.InputTokenCount,
-                                            metaDataRawChatUpdate.Usage.OutputTokenCount));
-            }
-        }
-       
-        if (item.FinishReason == Microsoft.Extensions.AI.ChatFinishReason.Length && !limitWarningShown)
-        {
-            Console.WriteLine($"[La risposta è stata interrotta perché è stato raggiunto il limite di token]");
-            limitWarningShown = true;
-        }
-    }
+    var response = await chatResponseService.GenerateResponseAsync(messages, options);
     #endregion
 
     #region Token Report
-    var inputTokenSum = 0;
-    var outputTokenSum = 0;
-    tokenInputOutput.ForEach(el => {inputTokenSum += (el.inputToken); outputTokenSum += el.outputToken;});
+    Console.WriteLine(response.Text);
+    Console.WriteLine();
+    Console.WriteLine($"Token utilizzati in totale: \n input: {response.InputTokens} | output: {response.OutputTokens} \n totale: {response.InputTokens+response.OutputTokens}");
 
-    Console.WriteLine(sb.ToString());
-
-    Console.WriteLine($"Token utilizzati in totale: \n input: {inputTokenSum} | output: {outputTokenSum} \n totale: {inputTokenSum+outputTokenSum}");
-
-    var responseChat = new ChatMessage(ChatRole.Assistant, sb.ToString());
+    var responseChat = new ChatMessage(ChatRole.Assistant, response.Text.ToString());
     #endregion
 
     #region History Message
