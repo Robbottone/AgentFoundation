@@ -1,53 +1,36 @@
-﻿using DotNetAIAgent.Embedding;
-using DotNetAIAgent.Model;
-using Microsoft.Extensions.AI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
+﻿using DotNetAIAgent.Model;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace DotNetAIAgent.Generation
+namespace DotNetAIAgent.Generation;
+public class RagMessageBuilder
 {
-    public class RagMessageBuilder
-    {
-        private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
-        private readonly VectorSearchService _vectorSearch;
+    public string CreateRagMessage(IEnumerable<DocumentChunk> documentChunks, string query)
+    { 
+        var context = CreateContext(documentChunks);
 
-        public RagMessageBuilder(IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator, VectorSearchService vectorSearch)
+        var stringBuilder = new StringBuilder();
+        
+        stringBuilder.AppendLine($"CONTEXT:\n{context}");
+        stringBuilder.AppendLine();
+        stringBuilder.AppendLine($"QUERY:\n{query}");
+        stringBuilder.AppendLine();
+
+        return stringBuilder.ToString();
+    }
+
+    private string CreateContext(IEnumerable<DocumentChunk> documentChunks)
+    { 
+        var stringBuilder = new StringBuilder();
+        var id = 1;
+
+        foreach (var chunk in documentChunks)
         {
-            _embeddingGenerator = embeddingGenerator;
-            _vectorSearch = vectorSearch;
-        }
-
-        public async Task<string> RetrieveMessageAsync(string query, IEnumerable<IndexedDocumentChunk> indexedChunks, int topK = 3)
-        { 
-            var queryEmbedding = await _embeddingGenerator.GenerateAsync([query]);
-            var vectorQuery = queryEmbedding.First();
-
-            var indexedTextResult = _vectorSearch.Search(vectorQuery.Vector, indexedChunks, topK);
-            
-            return CreateMessage(indexedTextResult.Select(el => el.IndexedDocument.DocumentChunk), query);
-        }
-
-        private static string CreateMessage(IEnumerable<DocumentChunk> documentChunks, string query)
-        { 
-            var stringBuilder = new StringBuilder();
-            var id = 1;
-
-            foreach (var chunk in documentChunks)
-            {
-                stringBuilder.AppendLine($"----- Source {id} -----");
-                stringBuilder.AppendLine(chunk.ChunkText);
-                stringBuilder.AppendLine();
-                id++;
-            }
-
-            stringBuilder.AppendLine(query);
+            stringBuilder.AppendLine($"----- Source {id} -----");
+            stringBuilder.AppendLine(chunk.ChunkText);
             stringBuilder.AppendLine();
-
-            return stringBuilder.ToString();
+            id++;
         }
+
+        return stringBuilder.ToString();
     }
 }
