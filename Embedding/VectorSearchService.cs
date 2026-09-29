@@ -4,12 +4,12 @@ namespace DotNetAIAgent.Embedding
 {
     public class VectorSearchService
     {
-        public IEnumerable<SearchResultEmbedding> Search(ReadOnlyMemory<float> vectorQuery, List<IndexedDocumentChunk> indexedDocumentChunks, int topK = 3)
+        public IEnumerable<SearchResultEmbedding> Search(ReadOnlyMemory<float> vectorQuery, IEnumerable<IndexedDocumentChunk> indexedDocumentChunks, int topK = 3)
         {
             if (vectorQuery.IsEmpty)
                throw new ArgumentException("Il vettore della query non deve essere vuoto");
 
-            if (indexedDocumentChunks.Count == 0)
+            if (!indexedDocumentChunks.Any())
                throw new ArgumentException("I vettori della ricerca devono essere presenti");
 
             var searchResultCosineValues = new List<SearchResultEmbedding>();

@@ -31,6 +31,8 @@ services.AddScoped<AIToolRegistry>();
 services.AddScoped<DocumentChunkingService>();
 services.AddScoped<DocumentChunkIndexService>();
 services.AddScoped<RagContextBuilderService>();
+services.AddScoped<VectorSearchService>();
+services.AddScoped<RagRetriever>();
 
 services.RegisterAIToolProviders();
 
@@ -43,6 +45,7 @@ var chatClient = scope.ServiceProvider.GetRequiredService<IChatClient>();
 var documentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkingService>();
 var indexedDocumentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkIndexService>();
 var ragContextBuilderService = scope.ServiceProvider.GetRequiredService<RagContextBuilderService>();
+var ragRetriever = scope.ServiceProvider.GetRequiredService<RagRetriever>();
 
 IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator = scope.ServiceProvider
                                                                         .GetRequiredService<IEmbeddingGenerator<string, Embedding<float>>>();
@@ -59,13 +62,10 @@ if (string.IsNullOrEmpty(readFile)) throw new ArgumentNullException(nameof(readF
 var fileGuid = Guid.NewGuid();
 
 var knowledgeBase = new KnowledgeDocument(fileGuid, fileName, readFile);
-var vectorSearch = new VectorSearchService();
-
 var documentChunks = documentChunkService.GenerateDocumentChunk(knowledgeBase, 400, 80);
-
 var indexedDocumentChunks = indexedDocumentChunkService.GenerateDocumentChunkIndex(documentChunks);
-List<IndexedDocumentChunk> chunks = new(); 
 
+List<IndexedDocumentChunk> chunks = new();  
 
 await foreach(var indChunk in indexedDocumentChunks)
 {
@@ -85,27 +85,13 @@ while(true)
     if (string.IsNullOrEmpty(query))
         continue;
     #endregion
-
-    #region Vector Comparison
-    var embeddingsQuery = await embeddingGenerator.GenerateAsync([query]);
-    var vectorQuery = embeddingsQuery.First();
-
-    var indexedTextResult = vectorSearch.Search(vectorQuery.Vector, chunks);
-
-    var count = 1;
-    foreach (var item in indexedTextResult)
-    {
-        Console.WriteLine($"========== RESULT #{count} ==========");
-        Console.WriteLine($"Similarity {item.Similarity}");
-        Console.WriteLine($"Start index {item.IndexedDocument.DocumentChunk.StartIndex}\n");
-
-        Console.WriteLine($"{item.IndexedDocument.DocumentChunk.ChunkText}\n");
-        count++;
-    }
+    var documentChunkResult = await ragRetriever.RetrieveAsync(query, chunks);
+    #region Retriever
+    
     #endregion
 
     #region Rag Input Message
-    var context = ragContextBuilderService.CreateContext(indexedTextResult.Select(el => el.IndexedDocument.DocumentChunk));
+    var context = ragContextBuilderService.CreateContext(documentChunkResult);
 
     var stringBuilder = new StringBuilder();
 
