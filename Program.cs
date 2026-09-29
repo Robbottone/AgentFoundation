@@ -47,9 +47,6 @@ var indexedDocumentChunkService = scope.ServiceProvider.GetRequiredService<Docum
 var ragContextBuilderService = scope.ServiceProvider.GetRequiredService<RagContextBuilderService>();
 var ragRetriever = scope.ServiceProvider.GetRequiredService<RagRetriever>();
 
-IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator = scope.ServiceProvider
-                                                                        .GetRequiredService<IEmbeddingGenerator<string, Embedding<float>>>();
-
 var fileName = Path.Combine(AppContext.BaseDirectory,"Knowledge","knowledge-base-thermohome-x200.txt");
 
 if (!File.Exists(fileName))
@@ -85,9 +82,9 @@ while(true)
     if (string.IsNullOrEmpty(query))
         continue;
     #endregion
-    var documentChunkResult = await ragRetriever.RetrieveAsync(query, chunks);
+
     #region Retriever
-    
+    var documentChunkResult = await ragRetriever.RetrieveAsync(query, chunks);
     #endregion
 
     #region Rag Input Message
