@@ -99,10 +99,10 @@ while(true)
 
     #region Message Response
     var response = await chatResponseService.GenerateResponseAsync(messages, options);
+    Console.WriteLine(response.Text);
     #endregion
 
     #region Token Report
-    Console.WriteLine(response.Text);
     Console.WriteLine();
     Console.WriteLine($"Token utilizzati in totale: \n input: {response.InputTokens} | output: {response.OutputTokens} \n totale: {response.InputTokens+response.OutputTokens}");
 
