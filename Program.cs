@@ -30,9 +30,8 @@ services.AddScoped<ProductServices>();
 services.AddScoped<AIToolRegistry>();
 services.AddScoped<DocumentChunkingService>();
 services.AddScoped<DocumentChunkIndexService>();
-services.AddScoped<RagContextBuilderService>();
 services.AddScoped<VectorSearchService>();
-services.AddScoped<RagRetriever>();
+services.AddScoped<RagMessageBuilder>();
 
 services.RegisterAIToolProviders();
 
@@ -44,8 +43,7 @@ var chatClient = scope.ServiceProvider.GetRequiredService<IChatClient>();
 
 var documentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkingService>();
 var indexedDocumentChunkService = scope.ServiceProvider.GetRequiredService<DocumentChunkIndexService>();
-var ragContextBuilderService = scope.ServiceProvider.GetRequiredService<RagContextBuilderService>();
-var ragRetriever = scope.ServiceProvider.GetRequiredService<RagRetriever>();
+var ragRetriever = scope.ServiceProvider.GetRequiredService<RagMessageBuilder>();
 
 var fileName = Path.Combine(AppContext.BaseDirectory,"Knowledge","knowledge-base-thermohome-x200.txt");
 
@@ -84,17 +82,10 @@ while(true)
     #endregion
 
     #region Retriever
-    var documentChunkResult = await ragRetriever.RetrieveAsync(query, chunks);
+    var ragMessage =  await ragRetriever.RetrieveMessageAsync(query, chunks);
     #endregion
 
     #region Rag Input Message
-    var context = ragContextBuilderService.CreateContext(documentChunkResult);
-
-    var stringBuilder = new StringBuilder();
-
-    stringBuilder.AppendLine($"CONTEXT:\n{context}");
-    stringBuilder.AppendLine($"QUESTION:\n{query}");
-    var ragMessage = stringBuilder.ToString();
     
     bool limitWarningShown = false;
 
