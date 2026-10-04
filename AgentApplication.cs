@@ -84,23 +84,18 @@ namespace DotNetAIAgent
                     Console.WriteLine("[La risposta è stata interrotta perché è stato raggiunto il limite massimo di token.]");
                 }
 
-                var stringBuilder = new StringBuilder();
-
-                stringBuilder.AppendLine($"QUERY: {queryStandalone}");
-                stringBuilder.AppendLine($"Response: {response.Text}");
-
-                ChatMessage storedMessage = new ChatMessage(ChatRole.User, stringBuilder.ToString());
                 #endregion
 
                 #region Token Report
                 Console.WriteLine();
                 Console.WriteLine($"Token utilizzati in totale: \n input: {response.InputTokens} | output: {response.OutputTokens} \n totale: {response.InputTokens + response.OutputTokens}");
 
+                var queryChat = new ChatMessage(ChatRole.User, query);
                 var responseChat = new ChatMessage(ChatRole.Assistant, response.Text);
                 #endregion
 
                 #region History Message
-                historyOfMessages.Add(storedMessage);
+                historyOfMessages.AddRange(queryChat, responseChat);
                 #endregion
             }
         }
