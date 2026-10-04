@@ -1,4 +1,4 @@
-﻿namespace DotNetAIAgent
+﻿namespace DotNetAIAgent.Model
 {
     public class AgentConnectionOptions
     {
