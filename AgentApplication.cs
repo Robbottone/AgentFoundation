@@ -13,13 +13,13 @@ namespace DotNetAIAgent
         private readonly ChatResponseService _chatResponseService;
         private readonly ChatOptions _chatOptions;
 
-        public AgentApplication(RagMessageBuilder ragMessageBuilder,
+        public AgentApplication(KnowledgeBaseEmbeddingService knowledgeBaseEmbedding,
+                                RagMessageBuilder ragMessageBuilder,
                                 RagRetriever ragRetriever,
                                 ChatResponseService chatResponseService,
                                 ChatOptions chatOptions)
         {
-            _documentChunkingService = documentChunkingService;
-            _documentChunkIndexService = documentChunkIndexService;
+            _knowedlgeEmbeddingService = knowledgeBaseEmbedding;
             _ragMessageBuilder = ragMessageBuilder;
             _ragRetriever = ragRetriever;
             _chatResponseService = chatResponseService;
