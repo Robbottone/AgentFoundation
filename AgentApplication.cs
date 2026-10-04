@@ -11,18 +11,21 @@ namespace DotNetAIAgent
         private readonly RagMessageBuilder _ragMessageBuilder;
         private readonly RagRetriever _ragRetriever;
         private readonly ChatResponseService _chatResponseService;
+        private readonly ChatQueryRewriter _chatQueryRewriter;
         private readonly ChatOptions _chatOptions;
 
         public AgentApplication(KnowledgeBaseEmbeddingService knowledgeBaseEmbedding,
                                 RagMessageBuilder ragMessageBuilder,
                                 RagRetriever ragRetriever,
                                 ChatResponseService chatResponseService,
+                                ChatQueryRewriter chatQueryRewriter,
                                 ChatOptions chatOptions)
         {
             _knowledgeEmbeddingService = knowledgeBaseEmbedding;
             _ragMessageBuilder = ragMessageBuilder;
             _ragRetriever = ragRetriever;
             _chatResponseService = chatResponseService;
+            _chatQueryRewriter = chatQueryRewriter;
             _chatOptions = chatOptions;
         }
 
@@ -57,7 +60,8 @@ namespace DotNetAIAgent
                 #endregion
 
                 #region Retriever
-                var documentChunkResult = await _ragRetriever.RetrieveAsync(chunks, query, messages);
+                var queryStandalone = await _chatQueryRewriter.RewriteQueryAsync(query, messages);
+                var documentChunkResult = await _ragRetriever.RetrieveAsync(chunks, queryStandalone);
                 #endregion
 
                 #region Rag Input Message
