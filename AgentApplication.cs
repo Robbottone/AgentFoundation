@@ -2,6 +2,7 @@
 using DotNetAIAgent.Generation;
 using DotNetAIAgent.Model;
 using Microsoft.Extensions.AI;
+using System.Text;
 
 namespace DotNetAIAgent
 {
@@ -46,7 +47,7 @@ namespace DotNetAIAgent
             
             var chunks = await _knowledgeEmbeddingService.CreateEmbeddingsAsync(knowledgeBase);
 
-            var messages = new List<ChatMessage>();
+            var historyOfMessages = new List<ChatMessage>();
 
             while (true)
             {
@@ -60,20 +61,22 @@ namespace DotNetAIAgent
                 #endregion
 
                 #region Retriever
-                var queryStandalone = await _chatQueryRewriter.RewriteQueryAsync(query, messages);
+                var queryStandalone = await _chatQueryRewriter.RewriteQueryAsync(query, historyOfMessages);
                 var documentChunkResult = await _ragRetriever.RetrieveAsync(chunks, queryStandalone);
                 #endregion
 
                 #region Rag Input Message
 
-                var ragMessage = _ragMessageBuilder.CreateRagMessage(documentChunkResult, query);
+                var ragMessage = _ragMessageBuilder.CreateRagMessage(documentChunkResult, queryStandalone);
 
-                ChatMessage message = new ChatMessage(ChatRole.User, ragMessage);
-                messages.Add(message);
+                ChatMessage message = new ChatMessage(ChatRole.User, ragMessage.ToString());
                 #endregion
 
                 #region Message Response
-                var response = await _chatResponseService.GenerateResponseAsync(messages, _chatOptions);
+                var response = await _chatResponseService.GenerateResponseAsync(historyOfMessages.Append(message).ToList(), _chatOptions);
+
+                Console.WriteLine("Response:");
+                Console.WriteLine();
                 Console.WriteLine(response.Text);
 
                 if (response.FinishReason.HasValue && response.FinishReason.Value == ChatFinishReason.Length)
@@ -81,6 +84,12 @@ namespace DotNetAIAgent
                     Console.WriteLine("[La risposta è stata interrotta perché è stato raggiunto il limite massimo di token.]");
                 }
 
+                var stringBuilder = new StringBuilder();
+
+                stringBuilder.AppendLine($"QUERY: {queryStandalone}");
+                stringBuilder.AppendLine($"Response: {response.Text}");
+
+                ChatMessage storedMessage = new ChatMessage(ChatRole.User, stringBuilder.ToString());
                 #endregion
 
                 #region Token Report
@@ -91,7 +100,7 @@ namespace DotNetAIAgent
                 #endregion
 
                 #region History Message
-                messages.Add(responseChat);
+                historyOfMessages.Add(storedMessage);
                 #endregion
             }
         }

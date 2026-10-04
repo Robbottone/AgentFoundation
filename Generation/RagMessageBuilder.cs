@@ -4,20 +4,13 @@ using System.Text;
 namespace DotNetAIAgent.Generation;
 public class RagMessageBuilder
 {
-    public string CreateRagMessage(IEnumerable<DocumentChunk> documentChunks, string query)
-    { 
-        var context = CreateContext(documentChunks);
+    public string CreateRagMessage(IEnumerable<DocumentChunk> documentChunks, string query) 
+    {
+        var regText = new RagText() { Context = CreateContext(documentChunks), Query = query };
 
-        var stringBuilder = new StringBuilder();
-        
-        stringBuilder.AppendLine($"CONTEXT:\n{context}");
-        stringBuilder.AppendLine();
-        stringBuilder.AppendLine($"QUERY:\n{query}");
-        stringBuilder.AppendLine();
-
-        return stringBuilder.ToString();
-    }
-
+        return regText.ToString();
+    } 
+    
     private string CreateContext(IEnumerable<DocumentChunk> documentChunks)
     { 
         var stringBuilder = new StringBuilder();
