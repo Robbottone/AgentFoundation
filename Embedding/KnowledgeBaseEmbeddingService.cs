@@ -18,7 +18,7 @@ namespace DotNetAIAgent.Embedding
             _documentChunkIndexService = documentChunkIndexService;
         }
 
-        public async Task<IEnumerable<IndexedDocumentChunk>> CreateEmbeddings(KnowledgeDocument knowledge)
+        public async Task<IEnumerable<IndexedDocumentChunk>> CreateEmbeddingsAsync(KnowledgeDocument knowledge)
         { 
             var documentChunks = _documentChunkingService.GenerateDocumentChunk(knowledge, 400, 80);
 

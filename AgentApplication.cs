@@ -7,7 +7,7 @@ namespace DotNetAIAgent
 {
     public class AgentApplication
     {
-        private KnowledgeBaseEmbeddingService _knowedlgeEmbeddingService;
+        private readonly KnowledgeBaseEmbeddingService _knowledgeEmbeddingService;
         private readonly RagMessageBuilder _ragMessageBuilder;
         private readonly RagRetriever _ragRetriever;
         private readonly ChatResponseService _chatResponseService;
@@ -19,7 +19,7 @@ namespace DotNetAIAgent
                                 ChatResponseService chatResponseService,
                                 ChatOptions chatOptions)
         {
-            _knowedlgeEmbeddingService = knowledgeBaseEmbedding;
+            _knowledgeEmbeddingService = knowledgeBaseEmbedding;
             _ragMessageBuilder = ragMessageBuilder;
             _ragRetriever = ragRetriever;
             _chatResponseService = chatResponseService;
@@ -41,7 +41,7 @@ namespace DotNetAIAgent
 
             var knowledgeBase = new KnowledgeDocument(fileGuid, fileName, readFile);
             
-            var chunks = await _knowedlgeEmbeddingService.CreateEmbeddings(knowledgeBase);
+            var chunks = await _knowledgeEmbeddingService.CreateEmbeddingsAsync(knowledgeBase);
 
             var messages = new List<ChatMessage>();
 
@@ -57,7 +57,7 @@ namespace DotNetAIAgent
                 #endregion
 
                 #region Retriever
-                var documentChunkResult = await _ragRetriever.RetrieveAsync(chunks, query);
+                var documentChunkResult = await _ragRetriever.RetrieveAsync(chunks, query, messages);
                 #endregion
 
                 #region Rag Input Message

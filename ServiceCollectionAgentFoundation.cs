@@ -32,6 +32,7 @@ namespace DotNetAIAgent
             services.AddScoped<RagRetriever>();
             services.AddScoped<ChatResponseService>();
             services.AddScoped<KnowledgeBaseEmbeddingService>();
+            services.AddScoped<ChatQueryRewriter>();
 
             services.RegisterAIToolProviders();
 
