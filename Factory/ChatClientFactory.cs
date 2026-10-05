@@ -1,6 +1,7 @@
 ﻿using Azure.AI.OpenAI;
 using Azure.Identity;
 using DotNetAIAgent.Interface;
+using DotNetAIAgent.Model;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 
