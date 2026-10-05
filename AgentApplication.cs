@@ -62,10 +62,16 @@ namespace DotNetAIAgent
 
                 #region Retriever
                 var queryStandalone = await _chatQueryRewriter.RewriteQueryAsync(query, historyOfMessages);
-                var documentChunkResult = await _ragRetriever.RetrieveAsync(chunks, queryStandalone);
+                var documentChunkResult = (await _ragRetriever.RetrieveAsync(chunks, queryStandalone)).ToList();
                 #endregion
 
                 #region Rag Input Message
+
+                if (!documentChunkResult.Any())
+                { 
+                    Console.WriteLine("Non ho trovato informazioni sufficientemente rilevanti nella knowledge base");
+                    continue;
+                }
 
                 var ragMessage = _ragMessageBuilder.CreateRagMessage(documentChunkResult, queryStandalone);
 

@@ -16,6 +16,7 @@ namespace DotNetAIAgent
         { 
             //options with type
             services.Configure<AgentConnectionOptions>(configuration.GetSection("AgentConnection"));
+            services.Configure<RetrievalOptions>(configuration.GetSection("Retrieval"));
 
             services.AddScoped<IChatClientFactory, ChatClientFactory>();
             services.AddScoped<IChatOptionsFactory, AgentChatOptionsFactory>();

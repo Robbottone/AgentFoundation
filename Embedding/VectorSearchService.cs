@@ -4,7 +4,7 @@ namespace DotNetAIAgent.Embedding
 {
     public class VectorSearchService
     {
-        public IEnumerable<SearchResultEmbedding> Search(ReadOnlyMemory<float> vectorQuery, IEnumerable<IndexedDocumentChunk> indexedDocumentChunks, int topK = 3)
+        public IEnumerable<SearchResultEmbedding> Search(ReadOnlyMemory<float> vectorQuery, IEnumerable<IndexedDocumentChunk> indexedDocumentChunks, int topK = 3, float? similarityThreshold = null)
         {
             if (vectorQuery.IsEmpty)
                throw new ArgumentException("Il vettore della query non deve essere vuoto");
@@ -19,6 +19,11 @@ namespace DotNetAIAgent.Embedding
                 var cosineValue = CosineSimilarity(vectorQuery, indexedText.Vector);
 
                 searchResultCosineValues.Add(new(indexedText, cosineValue));
+            }
+
+            if (similarityThreshold.HasValue)
+            { 
+                return searchResultCosineValues.Where(el => el.Similarity >= similarityThreshold.Value).OrderByDescending(el => el.Similarity).Take(topK);
             }
 
             return searchResultCosineValues.OrderByDescending(el => el.Similarity).Take(topK);
