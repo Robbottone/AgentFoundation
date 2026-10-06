@@ -1,3 +1,4 @@
 <Solution>
-  <Project Path="DotNetAIAgent.csproj" />
+  <Project Path="DotNetAIAgent.Evaluation/DotNetAIAgent.Evaluation.csproj" Id="6e5be39a-ce38-4e81-836b-c7c1932a97cc" />
+  <Project Path="DotNetAIAgent/DotNetAIAgent.csproj" />
 </Solution>

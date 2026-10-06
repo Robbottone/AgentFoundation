@@ -24,14 +24,27 @@ namespace DotNetAIAgent.Generation
             _retrievalOptions = options.Value;
         }
 
-        public async Task<IEnumerable<DocumentChunk>> RetrieveAsync(IEnumerable<IndexedDocumentChunk> indexedChunks, string query, int topK = 3)
-        { 
+        private async Task<IEnumerable<SearchResultEmbedding>> RetrieveDocumentWithSimilarityAsync(IEnumerable<IndexedDocumentChunk> indexedChunks, string query, int topK)
+        {
             var queryEmbedding = await _embeddingGenerator.GenerateAsync([query]);
             var vectorQuery = queryEmbedding.First();
 
             var indexedTextResult = _vectorSearch.Search(vectorQuery.Vector, indexedChunks, topK, _retrievalOptions.SimilarityThreshold);
-            
+            return indexedTextResult;
+        }
+
+        public async Task<IEnumerable<DocumentChunk>> RetrieveAsync(IEnumerable<IndexedDocumentChunk> indexedChunks, string query, int topK = 3)
+        {
+            IEnumerable<SearchResultEmbedding> indexedTextResult = await RetrieveDocumentWithSimilarityAsync(indexedChunks, query, topK);
+
             return indexedTextResult.Select(el => el.IndexedDocument.DocumentChunk);
         }
+
+        public async Task<IEnumerable<SearchResultEmbedding>> RetrieveWithScoresAsync(IEnumerable<IndexedDocumentChunk> indexedChunks, string query, int topK = 3)
+        { 
+            return await this.RetrieveDocumentWithSimilarityAsync(indexedChunks, query, topK);
+        }
+
+        
     }
 }
