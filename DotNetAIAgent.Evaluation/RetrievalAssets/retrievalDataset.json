@@ -1,0 +1,18 @@
+{
+  "documentId": "a13c7e52-2b60-4d71-9f84-31e24dcb8760",
+  "name": "ThermoHome X200 - Retrieval Evaluation",
+  "cases": [
+    {
+      "query": "Quanto dura la garanzia della ThermoHome X200?",
+      "expectedChunkId": "a13c7e52-2b60-4d71-9f84-31e24dcb8760_3584"
+    },
+    {
+      "query": "Cosa indica l'errore E20?",
+      "expectedChunkId": "a13c7e52-2b60-4d71-9f84-31e24dcb8760_1729"
+    },
+    {
+      "query": "Come posso aumentare la pressione della caldaia?",
+      "expectedChunkId": "a13c7e52-2b60-4d71-9f84-31e24dcb8760_970"
+    }
+  ]
+}

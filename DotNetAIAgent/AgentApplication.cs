@@ -32,19 +32,8 @@ namespace DotNetAIAgent
 
         public async Task RunAsync()
         {
-            var fileName = Path.Combine(AppContext.BaseDirectory, "Knowledge", "knowledge-base-thermohome-x200.txt");
+            KnowledgeDocument knowledgeBase = LoadKnowledgeBase();
 
-            if (!File.Exists(fileName))
-                throw new ArgumentNullException("File non esiste");
-
-            var readFile = File.ReadAllText(fileName);
-
-            if (string.IsNullOrEmpty(readFile)) throw new ArgumentNullException(nameof(readFile), "File vuoto o non raggiungibile");
-
-            var fileGuid = Guid.NewGuid();
-
-            var knowledgeBase = new KnowledgeDocument(fileGuid, fileName, readFile);
-            
             var chunks = await _knowledgeEmbeddingService.CreateEmbeddingsAsync(knowledgeBase);
 
             var historyOfMessages = new List<ChatMessage>();
@@ -68,7 +57,7 @@ namespace DotNetAIAgent
                 #region Rag Input Message
 
                 if (!documentChunkResult.Any())
-                { 
+                {
                     Console.WriteLine("Non ho trovato informazioni sufficientemente rilevanti nella knowledge base");
                     continue;
                 }
@@ -104,6 +93,21 @@ namespace DotNetAIAgent
                 historyOfMessages.AddRange(queryChat, responseChat);
                 #endregion
             }
+        }
+
+        public static KnowledgeDocument LoadKnowledgeBase()
+        {
+            var fileName = Path.Combine(AppContext.BaseDirectory, "Knowledge", "knowledge-base-thermohome-x200.txt");
+
+            if (!File.Exists(fileName))
+                throw new ArgumentNullException("File non esiste");
+
+            var readFile = File.ReadAllText(fileName);
+
+            if (string.IsNullOrEmpty(readFile)) throw new ArgumentNullException(nameof(readFile), "File vuoto o non raggiungibile");
+
+            var knowledgeBase = new KnowledgeDocument(Guid.Parse("a13c7e52-2b60-4d71-9f84-31e24dcb8760"), fileName, readFile);
+            return knowledgeBase;
         }
     }
 }
