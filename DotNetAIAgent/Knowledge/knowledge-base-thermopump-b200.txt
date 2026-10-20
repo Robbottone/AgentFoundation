@@ -1,0 +1,28 @@
+KNOWLEDGE BASE – POMPA DI CALORE THERMOPUMP B200
+
+1. DESCRIZIONE GENERALE
+La ThermoPump B200 è una pompa di calore aria-acqua per riscaldamento domestico e produzione di acqua calda tramite accumulo compatibile. Il sistema utilizza un'unità esterna e un circuito idraulico interno.
+
+2. TEMPERATURA DI MANDATA
+Per gli impianti radianti a pavimento, la temperatura di mandata viene normalmente impostata a valori inferiori rispetto agli impianti con radiatori. Le impostazioni devono essere definite dall'installatore in base all'edificio e all'impianto.
+
+3. SBRINAMENTO AUTOMATICO
+In condizioni fredde e umide, l'unità esterna può avviare un ciclo di sbrinamento. Durante questa fase la produzione di calore può interrompersi temporaneamente e può comparire vapore vicino all'unità esterna: il fenomeno può essere normale.
+
+4. ERRORE P07 – FLUSSO IDRAULICO RIDOTTO
+Il codice P07 segnala una portata d'acqua insufficiente. Verificare soltanto le impostazioni accessibili all'utente e che non siano state chiuse accidentalmente tutte le zone dell'impianto. Se il problema persiste, richiedere assistenza.
+
+5. ERRORE P12 – SONDA ESTERNA
+Il codice P12 indica un'anomalia della sonda di temperatura esterna. La regolazione climatica può risultare compromessa. Contattare il servizio tecnico.
+
+6. MODALITÀ VACANZA
+La modalità VACANZA riduce il funzionamento secondo le temperature minime configurate, senza disabilitare necessariamente le protezioni antigelo. Verificare le impostazioni prima di assenze prolungate.
+
+7. RUMOROSITÀ
+Il rumore della ventola esterna può variare con il carico termico e durante lo sbrinamento. Vibrazioni forti o rumori metallici persistenti richiedono un controllo tecnico.
+
+8. MANUTENZIONE
+Mantenere libere da foglie e ostacoli le prese d'aria dell'unità esterna, senza aprire i pannelli. Le operazioni sul circuito frigorifero e idraulico sono riservate a personale qualificato.
+
+9. GARANZIA
+La garanzia commerciale standard della ThermoPump B200 è di 30 mesi dalla data di acquisto, salvo condizioni contrattuali differenti.

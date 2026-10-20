@@ -1,7 +1,5 @@
 ﻿using DotNetAIAgent.Evaluation.Model;
-using System.ClientModel.Primitives;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace DotNetAIAgent.Evaluation.Services;
 
@@ -26,7 +24,7 @@ public class RetrievalDatasetLoader
         var dataSetResult = new List<RetrievalEvaluationDataset>();
         var jsonOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
 
-        foreach( var jsonPath in jsonPaths)
+        foreach(var jsonPath in jsonPaths)
         {
             string jsonString = File.ReadAllText(jsonPath);
 

@@ -1,0 +1,28 @@
+KNOWLEDGE BASE – CALDAIA A CONDENSAZIONE THERMOHOME X300
+
+1. DESCRIZIONE GENERALE
+La ThermoHome X300 è una caldaia murale a condensazione con modulazione automatica, destinata al riscaldamento e alla produzione di acqua calda sanitaria. Il pannello digitale mostra temperatura di mandata, pressione e stato operativo.
+
+2. PRESSIONE DELL'IMPIANTO
+A impianto freddo, la pressione consigliata è tra 1,1 e 1,6 bar. Se scende sotto 0,7 bar, la caldaia può sospendere l'accensione. Per reintegrare acqua utilizzare lentamente il rubinetto di carico e richiuderlo quando il display indica circa 1,3 bar. Non lasciare aperto il rubinetto di carico.
+
+3. ERRORE E31 – CIRCOLAZIONE INSUFFICIENTE
+Il codice E31 segnala che il flusso d'acqua nel circuito di riscaldamento è insufficiente. Verificare che le valvole dei radiatori non siano tutte chiuse. Se l'errore persiste, arrestare l'apparecchio e richiedere un controllo tecnico della pompa o del circuito.
+
+4. ERRORE E42 – SONDA TEMPERATURA
+Il codice E42 indica un'anomalia nella lettura della sonda di temperatura. Non tentare di sostituire la sonda autonomamente. Annotare il codice e contattare l'assistenza autorizzata.
+
+5. MODALITÀ ECO E COMFORT
+In modalità ECO la caldaia evita il preriscaldamento continuo dell'acqua sanitaria per ridurre i consumi. In modalità COMFORT mantiene una disponibilità più rapida di acqua calda, con un consumo energetico potenzialmente superiore.
+
+6. RESET
+Per gli errori temporanei che lo consentono, tenere premuto il tasto RESET per tre secondi. Se il codice ricompare, non ripetere continuamente il reset: richiedere assistenza.
+
+7. MANUTENZIONE
+La pulizia esterna può essere eseguita con un panno morbido. La manutenzione interna e i controlli di combustione devono essere eseguiti da personale qualificato.
+
+8. GARANZIA
+La garanzia commerciale standard della ThermoHome X300 è di 36 mesi dalla data di acquisto, salvo condizioni contrattuali specifiche. Conservare la prova di acquisto e il libretto degli interventi.
+
+9. SICUREZZA
+Se si avverte odore di gas, evitare fiamme e interruttori elettrici, aerare il locale se sicuro e rivolgersi ai servizi competenti. Non aprire il mantello dell'apparecchio.

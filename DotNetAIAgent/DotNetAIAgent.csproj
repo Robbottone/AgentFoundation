@@ -8,15 +8,35 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Knowledge\documentIds.json" />
+    <None Remove="Knowledge\knowledge-base-climacool-a100.txt" />
+    <None Remove="Knowledge\knowledge-base-smarttemp-t500.txt" />
     <None Remove="Knowledge\knowledge-base-test-lastinfex.txt" />
     <None Remove="Knowledge\knowledge-base-thermohome-x200.txt" />
+    <None Remove="Knowledge\knowledge-base-thermohome-x300.txt" />
+    <None Remove="Knowledge\knowledge-base-thermopump-b200.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Knowledge\documentIds.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Knowledge\knowledge-base-climacool-a100.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Knowledge\knowledge-base-smarttemp-t500.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Knowledge\knowledge-base-test-lastinfex.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Knowledge\knowledge-base-thermohome-x200.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Knowledge\knowledge-base-thermohome-x300.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Knowledge\knowledge-base-thermopump-b200.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

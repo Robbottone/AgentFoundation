@@ -1,7 +1,6 @@
 ﻿using DotNetAIAgent;
 using DotNetAIAgent.Embedding;
 using DotNetAIAgent.Evaluation;
-using DotNetAIAgent.Evaluation.Model;
 using DotNetAIAgent.Evaluation.Services;
 using DotNetAIAgent.Generation;
 using Microsoft.Extensions.Configuration;
@@ -18,16 +17,13 @@ var serviceScope = serviceProvider.CreateScope();
 
 var scope = serviceScope.ServiceProvider;
 
-KnowledgeBaseEmbeddingService knowledgeBaseService = scope.GetRequiredService<KnowledgeBaseEmbeddingService>();
+var entireKnowledge = KnowledgeBaseLoader.LoadKnowledgeBase();
+var knowledgeBaseService = scope.GetRequiredService<KnowledgeBaseEmbeddingService>();
 
 var documentService = scope.GetRequiredService<DocumentChunkingService>();
 var retrievalDatabaseLoader = scope.GetRequiredService<RetrievalDatasetLoader>();
 var retrieverBanchmark = scope.GetRequiredService<RetrievalBenchmark>();
 var ragRetriever = scope.GetRequiredService<RagRetriever>();
-
-var knowledegeBase = AgentApplication.LoadKnowledgeBase();
-
-var documentChunked = documentService.GenerateDocumentChunk(knowledegeBase, 400, 80);
 var datasets = retrievalDatabaseLoader.LoadDatasets();
 
 #region stampatore
@@ -46,18 +42,22 @@ var datasets = retrievalDatabaseLoader.LoadDatasets();
 //}
 #endregion
 
-var embeddings = (await knowledgeBaseService.CreateEmbeddingsAsync(knowledegeBase)).ToList();
+//creo gli embedding del document
+var embeddings = await Task.WhenAll(
+                            entireKnowledge.Select(kb =>
+                                knowledgeBaseService.CreateEmbeddingsAsync(kb)).ToList());
 
-if (!embeddings.Any() || !datasets.Any())
-    return;
-
-var retrievalCases = datasets.First(el => el.DocumentId == Guid.Parse("a13c7e52-2b60-4d71-9f84-31e24dcb8760")).Cases;
+//select-many per appiattire gli embeddings su unico vettore. I documenti vengono riconosciuto per documentIds
+var embs = embeddings.SelectMany(x => x).ToList();
 
 var hitAt = 3;
 
-var outcomes = await retrieverBanchmark.ExecuteBenchmark(retrievalCases, embeddings, hitAt);
+foreach(var dataset in datasets)
+{ 
+    var outcomes = await retrieverBanchmark.ExecuteBenchmark(dataset.Cases, embs, hitAt);
 
-Console.WriteLine($"Total cases = {outcomes.TotalCases}");
-Console.WriteLine($"TopOne accuracy = {outcomes.TopOneAccuracy}");
-Console.WriteLine($"CORRECT OUTCOMES = {outcomes.CorrectOutcome}");
-Console.WriteLine($"Hit at {hitAt} = {outcomes.CorrectHitAtK}");
+    Console.WriteLine($"Total cases = {outcomes.TotalCases}");
+    Console.WriteLine($"TopOne accuracy = {outcomes.TopOneAccuracy}");
+    Console.WriteLine($"CORRECT OUTCOMES = {outcomes.CorrectOutcome}");
+    Console.WriteLine($"Hit at {hitAt} = {outcomes.CorrectHitAtK}");
+}

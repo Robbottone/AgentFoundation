@@ -32,7 +32,10 @@ namespace DotNetAIAgent
 
         public async Task RunAsync()
         {
-            KnowledgeDocument knowledgeBase = LoadKnowledgeBase();
+            //carica tutti i file
+            var entireKnowledgeBase = KnowledgeBaseLoader.LoadKnowledgeBase();
+
+            var knowledgeBase = entireKnowledgeBase.First(el => el.DocumentFilename == "knowledge-base-thermohome-x200.txt");
 
             var chunks = await _knowledgeEmbeddingService.CreateEmbeddingsAsync(knowledgeBase);
 
@@ -95,19 +98,6 @@ namespace DotNetAIAgent
             }
         }
 
-        public static KnowledgeDocument LoadKnowledgeBase()
-        {
-            var fileName = Path.Combine(AppContext.BaseDirectory, "Knowledge", "knowledge-base-thermohome-x200.txt");
-
-            if (!File.Exists(fileName))
-                throw new ArgumentNullException("File non esiste");
-
-            var readFile = File.ReadAllText(fileName);
-
-            if (string.IsNullOrEmpty(readFile)) throw new ArgumentNullException(nameof(readFile), "File vuoto o non raggiungibile");
-
-            var knowledgeBase = new KnowledgeDocument(Guid.Parse("a13c7e52-2b60-4d71-9f84-31e24dcb8760"), fileName, readFile);
-            return knowledgeBase;
-        }
+        
     }
 }

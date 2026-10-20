@@ -1,0 +1,28 @@
+KNOWLEDGE BASE – TERMOSTATO SMARTTEMP T500
+
+1. DESCRIZIONE GENERALE
+Lo SmartTemp T500 è un termostato programmabile per la gestione della temperatura ambiente. Supporta fasce orarie, modalità manuale e collegamento Wi-Fi per il controllo tramite applicazione compatibile.
+
+2. IMPOSTAZIONE DELLA TEMPERATURA
+In modalità MANUALE il termostato mantiene la temperatura selezionata fino a una nuova modifica. In modalità PROGRAMMA segue le fasce orarie salvate dall'utente.
+
+3. PROGRAMMAZIONE SETTIMANALE
+Il T500 consente di configurare fino a sei fasce orarie per giorno. Ogni fascia prevede un orario di inizio e una temperatura obiettivo. Le modifiche vanno salvate prima di uscire dal menu.
+
+4. COLLEGAMENTO WI-FI
+Il termostato supporta reti Wi-Fi a 2,4 GHz. Per avviare l'associazione, aprire il menu RETE e selezionare ABBINA. Se la connessione fallisce, controllare la password e la disponibilità della rete a 2,4 GHz.
+
+5. ERRORE T04 – SONDA AMBIENTE
+Il codice T04 segnala un problema nella lettura della temperatura ambiente. Se il messaggio persiste dopo il riavvio, contattare l'assistenza e non aprire il dispositivo.
+
+6. ERRORE T09 – CONNESSIONE NON DISPONIBILE
+Il codice T09 indica che il termostato non riesce a comunicare con la rete Wi-Fi configurata. Il controllo locale della temperatura può rimanere disponibile anche senza connessione remota.
+
+7. BLOCCO TASTI
+Il blocco tasti impedisce modifiche accidentali. Per attivarlo o disattivarlo, tenere premuti contemporaneamente i tasti SU e GIÙ per cinque secondi.
+
+8. BATTERIA E ALIMENTAZIONE
+A seconda della versione installata, l'alimentazione può essere cablata o a batterie. Seguire le indicazioni riportate sull'etichetta del dispositivo e nel manuale specifico.
+
+9. GARANZIA
+La garanzia commerciale standard dello SmartTemp T500 è di 24 mesi dalla data di acquisto, salvo condizioni differenti.
