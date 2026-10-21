@@ -52,12 +52,22 @@ var embs = embeddings.SelectMany(x => x).ToList();
 
 var hitAt = 3;
 
+if (!datasets.Any())
+    throw new InvalidOperationException("No datasets has been loaded");
+
+Console.WriteLine($"Starting the Benchmark");
+
 foreach(var dataset in datasets)
 { 
     var outcomes = await retrieverBanchmark.ExecuteBenchmark(dataset.Cases, embs, hitAt);
 
+    Console.WriteLine($"================================================================");
+    Console.WriteLine($"DATASET Name: {dataset.Name}");
+    Console.WriteLine($"----------------------------------------------------------------");
+    Console.WriteLine($"RESULTS:");
     Console.WriteLine($"Total cases = {outcomes.TotalCases}");
     Console.WriteLine($"TopOne accuracy = {outcomes.TopOneAccuracy}");
     Console.WriteLine($"CORRECT OUTCOMES = {outcomes.CorrectOutcome}");
     Console.WriteLine($"Hit at {hitAt} = {outcomes.CorrectHitAtK}");
+    Console.WriteLine($"=================================================================");
 }

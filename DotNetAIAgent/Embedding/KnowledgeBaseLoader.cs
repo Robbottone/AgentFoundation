@@ -3,15 +3,9 @@ using System.Text.Json;
 
 namespace DotNetAIAgent.Embedding;
 
-public class KnowledgeBaseLoader
+public static class KnowledgeBaseLoader
 {
     private const string documentFileName = "documentIds.json";
-    private KnowledgeBaseEmbeddingService _knowledgeService;
-
-    public KnowledgeBaseLoader(KnowledgeBaseEmbeddingService knowledgeService)
-    {
-        _knowledgeService = knowledgeService;
-    }
 
     public static IEnumerable<KnowledgeDocument> LoadKnowledgeBase()
     {
